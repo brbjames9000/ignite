@@ -5,6 +5,7 @@ namespace Tests\Feature\Thread;
 use App\Models\Channel;
 use App\Models\Thread;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
@@ -72,5 +73,24 @@ class BrowseThreadTest extends TestCase
         $nonChannelThreads->each(function ($thread) use ($content) {
             $this->assertStringNotContainsString($thread->title, $content);
         });
+    }
+
+    public function testThreadsCanBeFilteredByUsername()
+    {
+        $this->signIn();
+
+        $threadbyUserOne = create(Thread::class, ['user_id' => Auth::user()->id]);
+
+        $threadNotbyUserOne = create(Thread::class);
+
+        $response = $this->get('/threads?by='.Auth::user()->username);
+
+        $response->assertStatus(200);
+
+        $content = $response->getContent();
+
+        $this->assertStringContainsString($threadbyUserOne->title, $content);
+
+        $this->assertStringNotContainsString($threadNotbyUserOne->title, $content);
     }
 }

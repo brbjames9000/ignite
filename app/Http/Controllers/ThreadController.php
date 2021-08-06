@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ThreadFilters;
 use App\Http\Requests\ThreadRequest;
 use App\Models\Channel;
 use App\Models\Thread;
 
 class ThreadController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * @param Channel|null $channel
+     * @param ThreadFilters $filters
      *
-     * @param \App\Models\Channel $channel
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index(?Channel $channel = null)
+    public function index(?Channel $channel = null, ThreadFilters $filters)
     {
-        return ! is_null($channel) ? $channel->threads->all() : Thread::all();
+        return response()->json((! is_null($channel)) ? $channel->threads->all() : Thread::filter($filters)->get());
     }
 
     /**
@@ -31,15 +32,17 @@ class ThreadController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+        * Store a newly created resource in storage.
+        *
+        * @param ThreadRequest $request
+        *
+        * @return \Illuminate\Http\JsonResponse
+        */
     public function store(ThreadRequest $request)
     {
-        Thread::create($request->validated());
+        $thread = Thread::create($request->validated());
+
+        return response()->json($thread, 201);
     }
 
     /**
@@ -48,11 +51,11 @@ class ThreadController extends Controller
      * @param \App\Models\Channel $channel
      * @param \App\Models\Thread  $thread
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Channel $channel, Thread $thread)
     {
-        return $thread;
+        return response()->json($thread);
     }
 
     /**
@@ -73,13 +76,15 @@ class ThreadController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Thread       $thread
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(ThreadRequest $request, Thread $thread)
     {
         $this->authorize('update', $thread);
 
         $thread->update($request->validated());
+
+        return response()->json($thread);
     }
 
     /**
@@ -87,12 +92,14 @@ class ThreadController extends Controller
      *
      * @param \App\Models\Thread $thread
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Thread $thread)
     {
         $this->authorize('update', $thread);
 
         $thread->delete();
+
+        return response()->json();
     }
 }
