@@ -18,12 +18,7 @@ class ThreadController extends Controller
      */
     public function index(?Channel $channel = null, ThreadFilters $filters)
     {
-        if (! is_null($channel)) {
-            $threads = $channel->threads->all();
-        } else {
-            $threads = Thread::filter($filters)->get();
-        }
-        return response()->json($threads);
+        return response()->json((! is_null($channel)) ? $channel->threads->all() : Thread::filter($filters)->get());
     }
 
     /**
@@ -37,12 +32,12 @@ class ThreadController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+        * Store a newly created resource in storage.
+        *
+        * @param ThreadRequest $request
+        *
+        * @return \Illuminate\Http\JsonResponse
+        */
     public function store(ThreadRequest $request)
     {
         $thread = Thread::create($request->validated());
@@ -56,7 +51,7 @@ class ThreadController extends Controller
      * @param \App\Models\Channel $channel
      * @param \App\Models\Thread  $thread
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Channel $channel, Thread $thread)
     {
@@ -81,7 +76,7 @@ class ThreadController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Thread       $thread
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(ThreadRequest $request, Thread $thread)
     {
@@ -97,7 +92,7 @@ class ThreadController extends Controller
      *
      * @param \App\Models\Thread $thread
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Thread $thread)
     {

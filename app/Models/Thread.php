@@ -59,6 +59,8 @@ class Thread extends Model
     }
 
     /**
+     * method to apply filters
+     *
      * @param $query
      * @param $filters
      *

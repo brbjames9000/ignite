@@ -9,22 +9,32 @@ class ThreadFilters
 {
 
     /**
-     * @var Request
+     * HTTP Request Instance
+     *
+     * @var \Illuminate\Http\Request
      */
     protected $request;
 
     /**
+     * Query builder instance
+     *
      * @var
      */
     protected $builder;
 
     /**
+     * Array of possible filters
+     *
      * @var string[]
      */
     protected $filters = ['by'];
 
     /**
      * ThreadFilters constructor.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return void
      */
     public function __construct(Request $request)
     {
@@ -32,6 +42,8 @@ class ThreadFilters
     }
 
     /**
+     * Apply filters to the query
+     *
      * @param $builder
      *
      * @return mixed
@@ -44,16 +56,17 @@ class ThreadFilters
                 $this->$filter($this->request->$filter);
             }
         }
-
         return $this->builder;
     }
 
     /**
-     * @param $username
+     * Filter by username function
+     *
+     * @param string $username
      *
      * @return mixed
      */
-    protected function by($username)
+    protected function by(string $username)
     {
         $user = User::where('username', $username)->firstOrFail();
 
