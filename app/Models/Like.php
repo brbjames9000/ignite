@@ -19,4 +19,9 @@ class Like extends Model
         'liked_resource_id',
         'liked_resource_type',
     ];
+
+    public function like()
+    {
+        return $this->morphMany(Like::class, 'likable');
+    }
 }

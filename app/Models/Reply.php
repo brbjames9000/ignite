@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Traits\LikableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Reply extends Model
 {
     use HasFactory;
+    use LikableTrait;
 
     /**
      * Mass assignable attributes.
@@ -29,13 +31,5 @@ class Reply extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function likes()
-    {
-        return $this->morphMany(Like::class, 'liked_resource');
     }
 }

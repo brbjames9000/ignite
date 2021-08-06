@@ -17,8 +17,7 @@ class LikesTest extends TestCase
 
         $thread = create(Thread::class);
 
-        $this->get('/thread/'.$thread->id.'/likes');
-        $this->get('/thread/'.$thread->id.'/likes');
+        $this->post('/thread/'.$thread->id.'/likes');
 
         $this->assertCount(1, $thread->likes);
     }
@@ -29,9 +28,34 @@ class LikesTest extends TestCase
 
         $reply = create(Reply::class);
 
-        $this->get('/replies/'.$reply->id.'/likes');
-        $this->get('/replies/'.$reply->id.'/likes');
+        $this->post('/replies/'.$reply->id.'/likes');
 
         $this->assertCount(1, $reply->likes);
+    }
+
+    public function testAuthenticatedUserDisLikesThread()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class);
+
+        $this->post('/thread/'.$thread->id.'/likes');
+
+        $this->post('/thread/'.$thread->id.'/likes');
+
+        $this->assertCount(0, $thread->likes);
+    }
+
+    public function testAuthenticatedUserDisLikesReply()
+    {
+        $this->signIn();
+
+        $reply = create(Reply::class);
+
+        $this->post('/replies/'.$reply->id.'/likes');
+
+        $this->post('/replies/'.$reply->id.'/likes');
+
+        $this->assertCount(0, $reply->likes);
     }
 }

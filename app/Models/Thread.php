@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Traits\LikableTrait;
 use Emberfuse\Blaze\Models\Traits\Directable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class Thread extends Model
 {
     use HasFactory;
     use Directable;
+    use LikableTrait;
 
     /**
      * Mass assignable attributes.
@@ -65,13 +67,5 @@ class Thread extends Model
     public function scopeFilter($query, $filters)
     {
         return $filters->apply($query);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function likes()
-    {
-        return $this->morphMany(Like::class, 'liked_resource');
     }
 }
